@@ -1,7 +1,6 @@
 import 'package:diplomova_praca/view/send_new_photos_screen.dart';
 import 'package:diplomova_praca/view/settings_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import 'capture_photo_screen.dart';
@@ -17,6 +16,10 @@ class _MainScreenState extends State<MainScreen> {
   Future<bool> checkDepthSupport() async {
     final deviceInfo = DeviceInfoPlugin();
     final androidInfo = await deviceInfo.androidInfo;
+    print('Hardware: ${androidInfo.hardware}, Model: ${androidInfo.model}');
+    androidInfo.systemFeatures.forEach((feature) {
+      print('System Feature: $feature');
+    });
     // Replace this with a real depth capability check later
     return androidInfo.model.toLowerCase().contains("pro");
   }
@@ -41,8 +44,13 @@ class _MainScreenState extends State<MainScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Image.asset(
+                'assets/tree.png'
+              ),
+              const SizedBox(height: 20),
               Text(
                 "Mobilná aplikácia pre podporu rozhodovania pri reze ovocných stromov",
                 textAlign: TextAlign.center,
