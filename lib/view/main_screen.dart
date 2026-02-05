@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     androidInfo.systemFeatures.forEach((feature) {
       print('System Feature: $feature');
     });
-    // Replace this with a real depth capability check later
+    //Zistit ci zariadenie podporuje android.hardware.camera.depth
     return androidInfo.model.toLowerCase().contains("pro");
   }
 
@@ -43,68 +43,70 @@ class _MainScreenState extends State<MainScreen> {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/tree.png'
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "Mobilná aplikácia pre podporu rozhodovania pri reze ovocných stromov",
-                textAlign: TextAlign.center,
-                style: CupertinoTheme.of(context)
-                    .textTheme
-                    .navTitleTextStyle
-                    .copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 40),
-              CupertinoButton.filled(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                borderRadius: BorderRadius.circular(14),
-                onPressed: () async {
-                  final supportDepth = await checkDepthSupport();
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (_) =>
-                          CaptureScreen(depthSupported: supportDepth),
-                    ),
-                  );
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(CupertinoIcons.camera),
-                    SizedBox(width: 8),
-                    Text("Zachytiť strom"),
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/tree.png'
                 ),
-              ),
-              const SizedBox(height: 20),
-              CupertinoButton(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                borderRadius: BorderRadius.circular(14),
-                color: CupertinoColors.systemGrey5,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (_) => const DatasetScreen()),
-                  );
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(CupertinoIcons.cloud_upload),
-                    SizedBox(width: 8),
-                    Text("Prispieť datasetom"),
-                  ],
+                const SizedBox(height: 20),
+                Text(
+                  "Mobilná aplikácia pre podporu rozhodovania pri reze ovocných stromov",
+                  textAlign: TextAlign.center,
+                  style: CupertinoTheme.of(context)
+                      .textTheme
+                      .navTitleTextStyle
+                      .copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ],
+                const SizedBox(height: 40),
+                CupertinoButton.filled(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  borderRadius: BorderRadius.circular(14),
+                  onPressed: () async {
+                    final supportDepth = await checkDepthSupport();
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (_) =>
+                            CaptureScreen(depthSupported: supportDepth),
+                      ),
+                    );
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.camera),
+                      SizedBox(width: 8),
+                      Text("Zachytiť strom"),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CupertinoButton(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  borderRadius: BorderRadius.circular(14),
+                  color: CupertinoColors.systemGrey5,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(builder: (_) => const DatasetScreen()),
+                    );
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.cloud_upload),
+                      SizedBox(width: 8),
+                      Text("Prispieť datasetom"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
