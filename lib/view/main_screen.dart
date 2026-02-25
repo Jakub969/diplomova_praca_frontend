@@ -1,7 +1,6 @@
 import 'package:diplomova_praca/view/send_new_photos_screen.dart';
 import 'package:diplomova_praca/view/settings_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 
 import 'capture_photo_screen.dart';
 
@@ -13,16 +12,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Future<bool> checkDepthSupport() async {
-    final deviceInfo = DeviceInfoPlugin();
-    final androidInfo = await deviceInfo.androidInfo;
-    print('Hardware: ${androidInfo.hardware}, Model: ${androidInfo.model}');
-    androidInfo.systemFeatures.forEach((feature) {
-      print('System Feature: $feature');
-    });
-    //Zistit ci zariadenie podporuje android.hardware.camera.depth
-    return androidInfo.model.toLowerCase().contains("pro");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +55,11 @@ class _MainScreenState extends State<MainScreen> {
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   borderRadius: BorderRadius.circular(14),
                   onPressed: () async {
-                    final supportDepth = await checkDepthSupport();
                     Navigator.push(
                       context,
                       CupertinoPageRoute(
                         builder: (_) =>
-                            CaptureScreen(depthSupported: supportDepth),
+                            CaptureScreen(),
                       ),
                     );
                   },

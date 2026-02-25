@@ -1,8 +1,29 @@
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CaptureScreen extends StatelessWidget {
-  final bool depthSupported;
-  const CaptureScreen({super.key, required this.depthSupported});
+  CaptureScreen({super.key});
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _recordVideo() async {
+    final XFile? video = await _picker.pickVideo(
+      source: ImageSource.camera,
+    );
+
+    if (video != null) {
+      print(video.path);
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    final XFile? video = await _picker.pickVideo(
+      source: ImageSource.gallery,
+    );
+
+    if (video != null) {
+      print(video.path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,28 +37,18 @@ class CaptureScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                depthSupported
-                    ? "Váš telefón podporuje fotenie s hĺbkou.\nStačia 1–2 snímky."
-                    : "Váš telefón nepodporuje fotenie s hĺbkou.\nPotrebných bude 10–20 snímok.",
-                textAlign: TextAlign.center,
-                style: CupertinoTheme.of(context)
-                    .textTheme
-                    .textStyle
-                    .copyWith(fontSize: 17),
-              ),
               const SizedBox(height: 40),
               CupertinoButton.filled(
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 borderRadius: BorderRadius.circular(14),
-                onPressed: () {},
+                onPressed: _recordVideo,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(CupertinoIcons.photo_camera_solid),
                     SizedBox(width: 8),
-                    Text("Zachytiť snímky"),
+                    Text("Urobiť video stromu"),
                   ],
                 ),
               ),
@@ -46,16 +57,14 @@ class CaptureScreen extends StatelessWidget {
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 borderRadius: BorderRadius.circular(14),
-                color: depthSupported
-                    ? CupertinoColors.activeGreen
-                    : CupertinoColors.systemGrey4,
-                onPressed: depthSupported ? () {} : null,
+                color: CupertinoColors.systemGrey5,
+                onPressed: _pickFromGallery,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(CupertinoIcons.cloud_upload),
                     SizedBox(width: 8),
-                    Text("Odoslať na analýzu"),
+                    Text("Odoslať predpripravené video"),
                   ],
                 ),
               ),
