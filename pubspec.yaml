@@ -38,6 +38,7 @@ dependencies:
   video_player: ^2.10.1
   http: ^1.6.0
   shared_preferences: ^2.5.3
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:

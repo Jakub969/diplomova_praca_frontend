@@ -1,3 +1,4 @@
+import 'package:diplomova_praca/view/my_trees.dart';
 import 'package:diplomova_praca/view/send_new_photos_screen.dart';
 import 'package:diplomova_praca/view/settings_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,6 +70,27 @@ class _MainScreenState extends State<MainScreen> {
                       Icon(CupertinoIcons.camera),
                       SizedBox(width: 8),
                       Text("Zachytiť strom"),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CupertinoButton(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  borderRadius: BorderRadius.circular(14),
+                  color: CupertinoColors.systemGrey5,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(builder: (_) => const MyTrees()),
+                    );
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.tree),
+                      SizedBox(width: 8),
+                      Text("Moje stromy"),
                     ],
                   ),
                 ),
