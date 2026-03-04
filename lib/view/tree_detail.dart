@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:diplomova_praca/controller/save_tree.dart';
+import 'package:flutter_3d_controller/flutter_3d_controller.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import '../controller/load_tree.dart';
 import '../model/tree.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:diplomova_praca/controller/save_tree.dart';
 
 class TreeDetail extends StatefulWidget {
   final String uuid;
@@ -23,6 +27,7 @@ class _TreeDetailState extends State<TreeDetail> {
   bool isProcessing = false;
   bool internetAvailable = true;
   int progress = 0;
+  final Flutter3DController _3dController = Flutter3DController();
 
   Timer? _timer;
 
@@ -77,12 +82,35 @@ class _TreeDetailState extends State<TreeDetail> {
       final state = data["state"];
 
       if (state == "SUCCESS") {
-        setState(() {
-          isProcessing = false;
-          isLoading = false;
-          progress = 100;
-        });
-        return;
+        if (tree.url.isEmpty) {
+          final uri = Uri.parse(
+            "http://192.168.0.113:8000/result/${tree.uuid}/sparse",
+          );
+
+          final response = await http.get(uri);
+
+          if (response.statusCode != 200) {
+            debugPrint("Download failed: ${response.statusCode}");
+            return;
+          }
+
+          final dir = await getApplicationDocumentsDirectory();
+
+          final filePath = "${dir.path}/${tree.uuid}.glb";
+
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+
+          setState(() {
+            tree.url = filePath;
+            isProcessing = false;
+            isLoading = false;
+            progress = 100;
+          });
+          SaveTree updateController = SaveTree();
+          await updateController.updateInLocalStorage(tree);
+          return;
+        }
       }
 
       setState(() {
@@ -103,10 +131,31 @@ class _TreeDetailState extends State<TreeDetail> {
 
         if (progressData["state"] == "SUCCESS") {
           timer.cancel();
+          final uri = Uri.parse(
+            "http://192.168.0.113:8000/result/${tree.uuid}/sparse",
+          );
+
+          final response = await http.get(uri);
+
+          if (response.statusCode != 200) {
+            debugPrint("Download failed: ${response.statusCode}");
+            return;
+          }
+
+          final dir = await getApplicationDocumentsDirectory();
+
+          final filePath = "${dir.path}/${tree.uuid}.glb";
+
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+
           setState(() {
+            tree.url = filePath;
             isProcessing = false;
             progress = 100;
           });
+          SaveTree updateController = SaveTree();
+          await updateController.updateInLocalStorage(tree);
         } else if (progressData["state"] == "PROGRESS") {
           setState(() {
             progress = progressData["progress"] ?? 0;
@@ -177,6 +226,21 @@ class _TreeDetailState extends State<TreeDetail> {
           title: const Text("UUID"),
           additionalInfo: Text(tree.uuid),
         ),
+        if (tree.url.isNotEmpty)
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Flutter3DViewer(
+                    controller: _3dController,
+                    src: Uri.file(tree.url).toString(),
+                  ),
+                ),
+              ],
+            ),
+          )
       ],
     );
   }
