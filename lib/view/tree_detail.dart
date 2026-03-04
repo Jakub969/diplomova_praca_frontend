@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import '../controller/load_tree.dart';
 import '../model/tree.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class TreeDetail extends StatefulWidget {
   final String uuid;
@@ -16,9 +18,10 @@ class TreeDetail extends StatefulWidget {
 
 class _TreeDetailState extends State<TreeDetail> {
 
-  Tree? tree;
+  late Tree tree;
   bool isLoading = true;
   bool isProcessing = false;
+  bool internetAvailable = true;
   int progress = 0;
 
   Timer? _timer;
@@ -35,51 +38,94 @@ class _TreeDetailState extends State<TreeDetail> {
     setState(() {
       tree = loadedTree;
     });
-
-    _checkStatus();
+    if (tree.url != "") {
+      setState(() {
+        isLoading = false;
+        debugPrint("URL: ${tree.url}");
+      });
+    } else {
+      debugPrint("Bez url");
+      _checkStatus();
+    }
   }
 
   void _checkStatus() async {
-    final response = await http.get(
-        Uri.parse("http://192.168.0.113:8000/status/${tree!.taskId}")
-    );
-
-    final data = jsonDecode(response.body);
-    final state = data["state"];
-
-    if (state == "SUCCESS") {
+    final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
       setState(() {
-        isProcessing = false;
         isLoading = false;
-        progress = 100;
+        isProcessing = false;
+        internetAvailable = false;
       });
+      debugPrint("Žiadne internetové připojení");
       return;
     }
-
-    setState(() {
-      isProcessing = true;
-      isLoading = false;
-    });
-
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) async {
-      final progressResponse = await http.get(
-          Uri.parse("http://192.168.0.113:8000/progress/${tree!.taskId}")
+    try {
+      final response = await http.get(
+          Uri.parse("http://192.168.0.113:8000/status/${tree.taskId}")
       );
 
-      final progressData = jsonDecode(progressResponse.body);
+      if (response.statusCode != 200) {
+        setState(() {
+          isLoading = false;
+          isProcessing = false;
+        });
+        debugPrint("Chyba pri načítaní stavu: ${response.statusCode}");
+        return;
+      }
+      final data = jsonDecode(response.body);
+      final state = data["state"];
 
-      if (progressData["state"] == "SUCCESS") {
-        timer.cancel();
+      if (state == "SUCCESS") {
         setState(() {
           isProcessing = false;
+          isLoading = false;
           progress = 100;
         });
-      } else if (progressData["state"] == "PROGRESS") {
-        setState(() {
-          progress = progressData["progress"] ?? 0;
-        });
+        return;
       }
-    });
+
+      setState(() {
+        isProcessing = true;
+        isLoading = false;
+      });
+
+      _timer = Timer.periodic(const Duration(seconds: 2), (timer) async {
+        final progressResponse = await http.get(
+            Uri.parse("http://192.168.0.113:8000/progress/${tree.taskId}")
+        );
+
+        if (progressResponse.statusCode != 200) {
+          debugPrint("Chyba při načítání progressu: ${progressResponse.statusCode}");
+          return;
+        }
+        final progressData = jsonDecode(progressResponse.body);
+
+        if (progressData["state"] == "SUCCESS") {
+          timer.cancel();
+          setState(() {
+            isProcessing = false;
+            progress = 100;
+          });
+        } else if (progressData["state"] == "PROGRESS") {
+          setState(() {
+            progress = progressData["progress"] ?? 0;
+          });
+        }
+      });
+    } on SocketException {
+      setState(() {
+        isLoading = false;
+        isProcessing = false;
+      });
+      debugPrint("Chyba na strane serveru: SocketException");
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        isProcessing = false;
+      });
+      debugPrint("Chyba pri načítaní stavu: $e");
+    }
   }
 
   @override
@@ -95,7 +141,8 @@ class _TreeDetailState extends State<TreeDetail> {
         middle: Text("Detail stromu"),
       ),
       child: SafeArea(
-        child: isLoading
+        child:
+            isLoading
             ? const Center(child: CupertinoActivityIndicator())
             : isProcessing
             ? Center(
@@ -108,7 +155,9 @@ class _TreeDetailState extends State<TreeDetail> {
             ],
           ),
         )
-            : _buildContent(),
+            : internetAvailable
+            ? _buildContent()
+            : const Center(child: Text("Žiadne internetove pripojenie"))
       ),
     );
   }
@@ -118,15 +167,15 @@ class _TreeDetailState extends State<TreeDetail> {
       children: [
         CupertinoListTile(
           title: const Text("Názov"),
-          additionalInfo: Text(tree!.name),
+          additionalInfo: Text(tree.name),
         ),
         CupertinoListTile(
           title: const Text("Typ"),
-          additionalInfo: Text(tree!.type),
+          additionalInfo: Text(tree.type),
         ),
         CupertinoListTile(
           title: const Text("UUID"),
-          additionalInfo: Text(tree!.uuid),
+          additionalInfo: Text(tree.uuid),
         ),
       ],
     );

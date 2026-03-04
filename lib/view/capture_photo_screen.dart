@@ -63,8 +63,9 @@ class _CaptureScreenState extends State<CaptureScreen> {
         content: const Text("Video bolo úspešne odoslané a bude zpracované. Výsledky budú k dispozíci v sekci Moje stromy."),
         actions: [
           CupertinoDialogAction(
+            isDefaultAction: true,
             child: const Text("OK"),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.popUntil(context, ( route) => route.isFirst),
           ),
         ],
       ));
@@ -169,8 +170,22 @@ class _CaptureScreenState extends State<CaptureScreen> {
                         right: 12,
                         child: GestureDetector(
                           onTap: () {
-                            if (_videoFile != null) {
+                            if (_videoFile != null && _nameController.text.trim().isNotEmpty) {
                               sendVideo(File(_videoFile!.path), context);
+                            } else {
+                              showCupertinoDialog(
+                                context: context,
+                                builder: (_) => CupertinoAlertDialog(
+                                  title: const Text("Chýbajúci názov stromu"),
+                                  content: const Text("Prosím zadajte názov stromu pred odoslaním videa."),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      child: const Text("OK"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }
                           },
                           child: Container(

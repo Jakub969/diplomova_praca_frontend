@@ -42,7 +42,9 @@ class _MyTreesState extends State<MyTrees> {
             }
 
             final trees = snapshot.data!;
-
+            for (Tree tree in trees) {
+              print("${tree.name} ${tree.path} ${tree.uuid} ${tree.url} ${tree.type} ${tree.taskId}");
+            }
             return CupertinoListSection.insetGrouped(
               children: trees.map((tree) {
                 return CupertinoListTile(
