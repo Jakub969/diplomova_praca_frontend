@@ -60,7 +60,7 @@ class _CaptureScreenState extends State<CaptureScreen> {
       print("Video uploaded successfully, job ID: $jobId");
       showCupertinoDialog(context: context, builder: (_) => CupertinoAlertDialog(
         title: const Text("Video úspešne odoslané"),
-        content: const Text("Video bolo úspešne odoslané a bude zpracované. Výsledky budú k dispozíci v sekci Moje stromy."),
+        content: const Text("Video bolo úspešne odoslané a bude spracované. Výsledky budú k dispozíci v sekci Moje stromy."),
         actions: [
           CupertinoDialogAction(
             isDefaultAction: true,

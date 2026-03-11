@@ -15,10 +15,19 @@ class DatasetScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Odošli fotografie stromov pred a po reze pre zlepšenie modelu.",
+                "Odošlite videá stromov pred a po reze pre zlepšenie modelu.",
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
+              CupertinoFormSection.insetGrouped(
+                children: [CupertinoTextFormFieldRow(
+                  style: const TextStyle(fontSize: 12, color: CupertinoColors.black),
+                  decoration: BoxDecoration(border: Border.all(color: CupertinoColors.systemGrey), borderRadius: BorderRadius.circular(8)),
+                  placeholder: "Názov stromu",
+                  placeholderStyle: const TextStyle(fontSize: 12, color: CupertinoColors.systemGrey),
+                ),],
+              ),
+              const SizedBox(height: 20),
               CupertinoButton.filled(
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -27,12 +36,26 @@ class DatasetScreen extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(CupertinoIcons.photo_on_rectangle),
+                    Icon(CupertinoIcons.video_camera_solid),
                     SizedBox(width: 8),
-                    Text("Nahrať fotografie"),
+                    Text("Video pred rezeom"),
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              CupertinoButton.filled(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  borderRadius: BorderRadius.circular(14),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.video_camera),
+                      SizedBox(width: 8),
+                      Text("Video po reze"),
+                    ],
+                  ),
+                  onPressed: () {})
             ],
           ),
         ),

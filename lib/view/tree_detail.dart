@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import '../controller/load_tree.dart';
 import '../model/tree.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:diplomova_praca/controller/save_tree.dart';
 
 class TreeDetail extends StatefulWidget {
   final String uuid;
@@ -220,7 +219,7 @@ class _TreeDetailState extends State<TreeDetail> {
         ),
         CupertinoListTile(
           title: const Text("Typ"),
-          additionalInfo: Text(tree.type),
+          additionalInfo: Text("SfM-MVS"),
         ),
         CupertinoListTile(
           title: const Text("UUID"),
