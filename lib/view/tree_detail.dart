@@ -66,7 +66,7 @@ class _TreeDetailState extends State<TreeDetail> {
     }
     try {
       final response = await http.get(
-          Uri.parse("http://192.168.0.113:8000/status/${tree.taskId}")
+          Uri.parse("http://192.168.0.115:8000/status/${tree.taskId}")
       );
 
       if (response.statusCode != 200) {
@@ -83,7 +83,7 @@ class _TreeDetailState extends State<TreeDetail> {
       if (state == "SUCCESS") {
         if (tree.url.isEmpty) {
           final uri = Uri.parse(
-            "http://192.168.0.113:8000/result/${tree.uuid}/sparse",
+            "http://192.168.0.115:8000/result/${tree.uuid}/sparse",
           );
 
           final response = await http.get(uri);
@@ -119,7 +119,7 @@ class _TreeDetailState extends State<TreeDetail> {
 
       _timer = Timer.periodic(const Duration(seconds: 2), (timer) async {
         final progressResponse = await http.get(
-            Uri.parse("http://192.168.0.113:8000/progress/${tree.taskId}")
+            Uri.parse("http://192.168.0.115:8000/progress/${tree.taskId}")
         );
 
         if (progressResponse.statusCode != 200) {
@@ -131,7 +131,7 @@ class _TreeDetailState extends State<TreeDetail> {
         if (progressData["state"] == "SUCCESS") {
           timer.cancel();
           final uri = Uri.parse(
-            "http://192.168.0.113:8000/result/${tree.uuid}/sparse",
+            "http://192.168.0.115:8000/result/${tree.uuid}/sparse",
           );
 
           final response = await http.get(uri);
@@ -223,7 +223,7 @@ class _TreeDetailState extends State<TreeDetail> {
         ),
         CupertinoListTile(
           title: const Text("UUID"),
-          additionalInfo: Text(tree.uuid),
+          additionalInfo: Expanded(child: Text(tree.uuid, overflow: TextOverflow.ellipsis,)),
         ),
         if (tree.url.isNotEmpty)
           SizedBox(

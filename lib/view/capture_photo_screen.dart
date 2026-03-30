@@ -41,7 +41,7 @@ class _CaptureScreenState extends State<CaptureScreen> {
         );
         return;
       }
-    var uri = Uri.parse("http://192.168.0.113:8000/upload");
+    var uri = Uri.parse("http://192.168.0.115:8000/upload");
 
     var request = http.MultipartRequest('POST', uri)
       ..files.add(await http.MultipartFile.fromPath('file', videoFile.path));
