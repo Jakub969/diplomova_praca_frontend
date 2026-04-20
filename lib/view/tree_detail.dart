@@ -61,7 +61,7 @@ class _TreeDetailState extends State<TreeDetail> {
         isProcessing = false;
         internetAvailable = false;
       });
-      debugPrint("Žiadne internetové připojení");
+      debugPrint("Žiadne internetové pripojenie");
       return;
     }
     try {
@@ -123,7 +123,7 @@ class _TreeDetailState extends State<TreeDetail> {
         );
 
         if (progressResponse.statusCode != 200) {
-          debugPrint("Chyba při načítání progressu: ${progressResponse.statusCode}");
+          debugPrint("Chyba pri načítání progressu: ${progressResponse.statusCode}");
           return;
         }
         final progressData = jsonDecode(progressResponse.body);
