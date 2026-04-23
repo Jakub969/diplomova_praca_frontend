@@ -1,16 +1,8 @@
 # diplomova_praca
 
-A new Flutter project.
+Mobilná aplikácia pre podporu rozhodovania pri reze ovocných stromov.
 
-## Getting Started
+<img width="720" height="1440" alt="Screenshot_2026-03-11-10-19-09-033_com example diplomova_praca" src="https://github.com/user-attachments/assets/7c0944d2-00bc-4b3d-b532-78a59a765f56" />
+<img width="720" height="1440" alt="Screenshot_2026-03-11-11-18-52-147_com example diplomova_praca" src="https://github.com/user-attachments/assets/cac83dca-ea66-4219-b061-6f42fb58dc6b" />
+<img width="720" height="1440" alt="Screenshot_2026-03-11-11-22-55-164_com example diplomova_praca" src="https://github.com/user-attachments/assets/f22e8b46-22c6-4af9-ba86-a4fb5f2f5c2a" />
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
